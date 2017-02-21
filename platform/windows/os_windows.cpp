@@ -445,74 +445,78 @@ LRESULT OS_Windows::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
 			};
 			*/
 
-				InputEvent event;
-				event.type = InputEvent::MOUSE_BUTTON;
-				event.ID = ++last_id;
-				InputEventMouseButton &mb = event.mouse_button;
+			InputEvent event;
+			event.type=InputEvent::MOUSE_BUTTON;
+			event.ID=++last_id;
+			InputEventMouseButton &mb=event.mouse_button;
 
-				switch (uMsg) {
-					case WM_LBUTTONDOWN: {
-						mb.pressed = true;
-						mb.button_index = 1;
-					} break;
-					case WM_LBUTTONUP: {
-						mb.pressed = false;
-						mb.button_index = 1;
-					} break;
-					case WM_MBUTTONDOWN: {
-						mb.pressed = true;
-						mb.button_index = 3;
+			switch (uMsg) {
+				case WM_LBUTTONDOWN: {
+					mb.pressed=true;
+					mb.button_index=1;
+				} break;
+				case WM_LBUTTONUP: {
+					mb.pressed=false;
+					mb.button_index=1;
+				} break;
+				case WM_MBUTTONDOWN: {
+					mb.pressed=true;
+					mb.button_index=3;
 
-					} break;
-					case WM_MBUTTONUP: {
-						mb.pressed = false;
-						mb.button_index = 3;
-					} break;
-					case WM_RBUTTONDOWN: {
-						mb.pressed = true;
-						mb.button_index = 2;
-					} break;
-					case WM_RBUTTONUP: {
-						mb.pressed = false;
-						mb.button_index = 2;
-					} break;
-					case WM_LBUTTONDBLCLK: {
+				} break;
+				case WM_MBUTTONUP: {
+					mb.pressed=false;
+					mb.button_index=3;
+				} break;
+				case WM_RBUTTONDOWN: {
+					mb.pressed=true;
+					mb.button_index=2;
+				} break;
+				case WM_RBUTTONUP: {
+					mb.pressed=false;
+					mb.button_index=2;
+				} break;
+				case WM_LBUTTONDBLCLK: {
 
-						mb.pressed = true;
-						mb.button_index = 1;
-						mb.doubleclick = true;
-					} break;
-					case WM_RBUTTONDBLCLK: {
+					mb.pressed=true;
+					mb.button_index=1;
+					mb.doubleclick = true;
+				} break;
+				case WM_RBUTTONDBLCLK: {
 
-						mb.pressed = true;
-						mb.button_index = 2;
-						mb.doubleclick = true;
-					} break;
-					case WM_MOUSEWHEEL: {
+					mb.pressed=true;
+					mb.button_index=2;
+					mb.doubleclick = true;
+				} break;
+				case WM_MOUSEWHEEL: {
 
-						mb.pressed = true;
-						int motion = (short)HIWORD(wParam);
-						if (!motion)
-							return 0;
+					mb.pressed=true;
+					int motion = (short)HIWORD(wParam);
+					if (!motion)
+						return 0;
 
-						if (motion > 0)
-							mb.button_index = BUTTON_WHEEL_UP;
-						else
-							mb.button_index = BUTTON_WHEEL_DOWN;
 
-					} break;
-					case WM_MOUSEHWHEEL: {
+					if (motion>0)
+						mb.button_index= BUTTON_WHEEL_UP;
+					else
+						mb.button_index= BUTTON_WHEEL_DOWN;
 
-						mb.pressed = true;
-						int motion = (short)HIWORD(wParam);
-						if (!motion)
-							return 0;
 
-						if (motion < 0)
-							mb.button_index = BUTTON_WHEEL_LEFT;
-						else
-							mb.button_index = BUTTON_WHEEL_RIGHT;
-					} break;
+				} break;
+				case WM_MOUSEHWHEEL: {
+
+					mb.pressed = true;
+					int motion = (short)HIWORD(wParam);
+					if (!motion)
+						return 0;
+
+					if (motion<0)
+						mb.button_index = BUTTON_WHEEL_LEFT;
+					mb.factor = fabs((double)motion / (double)WHEEL_DELTA);
+					else
+						mb.button_index = BUTTON_WHEEL_RIGHT;
+					mb.factor = fabs((double)motion / (double)WHEEL_DELTA);
+				} break;
 					/*
 				case WM_XBUTTONDOWN: {
 					mb.pressed=true;

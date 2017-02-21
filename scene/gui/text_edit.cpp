@@ -333,11 +333,11 @@ void TextEdit::_update_scrollbars() {
 		v_scroll->show();
 		v_scroll->set_max(total_rows);
 		v_scroll->set_page(visible_rows);
-        if (fabs(v_scroll->get_value() - (double)cursor.line_ofs) >= 1) {
-            v_scroll->set_value(cursor.line_ofs);
-        }
+		if (fabs(v_scroll->get_value() - (double)cursor.line_ofs) >= 1) {
+			v_scroll->set_value(cursor.line_ofs);
+		}
 
-	} else {
+	}  else {
 		cursor.line_ofs = 0;
 		v_scroll->hide();
 	}
@@ -348,9 +348,9 @@ void TextEdit::_update_scrollbars() {
 		h_scroll->set_max(total_width);
 		h_scroll->set_page(visible_width);
 
-        if (fabs(h_scroll->get_value() - (double)cursor.x_ofs) >= 1) {
-            h_scroll->set_value(cursor.x_ofs);
-        }
+		if (fabs(h_scroll->get_value() - (double)cursor.x_ofs) >= 1) {
+			h_scroll->set_value(cursor.x_ofs);
+		}
 
 	} else {
 
