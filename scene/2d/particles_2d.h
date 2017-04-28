@@ -149,6 +149,7 @@ private:
 	float lifetime;
 	bool emitting;
 	bool local_space;
+	bool face_direction;
 	float emit_timeout;
 	float time_to_live;
 	float time_scale;
@@ -185,6 +186,9 @@ protected:
 public:
 	void set_emitting(bool p_emitting);
 	bool is_emitting() const;
+
+	void set_face_direction(bool p_face_direction);
+	bool is_face_direction() const;
 
 	void set_process_mode(ProcessMode p_mode);
 	ProcessMode get_process_mode() const;

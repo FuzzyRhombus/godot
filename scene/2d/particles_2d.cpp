@@ -351,7 +351,7 @@ void Particles2D::_process_particles(float p_delta) {
 				p.velocity *= param[PARAM_LINEAR_VELOCITY] + param[PARAM_LINEAR_VELOCITY] * _rand_from_seed(&rand_seed) * randomness[PARAM_LINEAR_VELOCITY];
 				p.velocity += initial_velocity;
 				p.active = true;
-				p.rot = Math::deg2rad(param[PARAM_INITIAL_ANGLE] + param[PARAM_INITIAL_ANGLE] * randomness[PARAM_INITIAL_ANGLE] * _rand_from_seed(&rand_seed));
+				p.rot = face_direction ? p.velocity.angle() + Math::deg2rad(param[PARAM_INITIAL_ANGLE]): Math::deg2rad(param[PARAM_INITIAL_ANGLE] + param[PARAM_INITIAL_ANGLE] * randomness[PARAM_INITIAL_ANGLE] * _rand_from_seed(&rand_seed));
 				active_count++;
 
 				p.frame = Math::fmod(param[PARAM_ANIM_INITIAL_POS] + randomness[PARAM_ANIM_INITIAL_POS] * _rand_from_seed(&rand_seed), 1.0);
@@ -421,7 +421,8 @@ void Particles2D::_process_particles(float p_delta) {
 			}
 
 			p.pos += p.velocity * frame_time;
-			p.rot += Math::lerp(param[PARAM_SPIN_VELOCITY], param[PARAM_SPIN_VELOCITY] * randomness[PARAM_SPIN_VELOCITY] * _rand_from_seed(&rand_seed), randomness[PARAM_SPIN_VELOCITY]) * frame_time;
+			if (face_direction) p.rot = p.velocity.angle() + Math::deg2rad(param[PARAM_INITIAL_ANGLE]);
+			else p.rot += Math::lerp(param[PARAM_SPIN_VELOCITY], param[PARAM_SPIN_VELOCITY] * randomness[PARAM_SPIN_VELOCITY] * _rand_from_seed(&rand_seed), randomness[PARAM_SPIN_VELOCITY]) * frame_time;
 			float anim_spd = param[PARAM_ANIM_SPEED_SCALE] + param[PARAM_ANIM_SPEED_SCALE] * randomness[PARAM_ANIM_SPEED_SCALE] * _rand_from_seed(&rand_seed);
 			p.frame = Math::fposmod(p.frame + (frame_time / lifetime) * anim_spd, 1.0);
 
@@ -677,6 +678,17 @@ void Particles2D::set_emitting(bool p_emitting) {
 bool Particles2D::is_emitting() const {
 
 	return emitting;
+}
+
+void Particles2D::set_face_direction(bool p_face_direction) {
+	if (face_direction == p_face_direction) return;
+
+	face_direction = p_face_direction;
+	_change_notify("config/face_direction");
+}
+
+bool Particles2D::is_face_direction() const {
+	return face_direction;
 }
 
 void Particles2D::set_process_mode(ProcessMode p_mode) {
@@ -1062,6 +1074,9 @@ void Particles2D::_bind_methods() {
 	ObjectTypeDB::bind_method(_MD("set_emission_points", "points"), &Particles2D::set_emission_points);
 	ObjectTypeDB::bind_method(_MD("get_emission_points"), &Particles2D::get_emission_points);
 
+	ObjectTypeDB::bind_method(_MD("set_face_direction", "enable"), &Particles2D::set_face_direction);
+	ObjectTypeDB::bind_method(_MD("is_face_direction"), &Particles2D::is_face_direction);
+
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "config/amount", PROPERTY_HINT_EXP_RANGE, "1,1024"), _SCS("set_amount"), _SCS("get_amount"));
 	ADD_PROPERTY(PropertyInfo(Variant::REAL, "config/lifetime", PROPERTY_HINT_EXP_RANGE, "0.1,3600,0.1"), _SCS("set_lifetime"), _SCS("get_lifetime"));
 	ADD_PROPERTYNO(PropertyInfo(Variant::REAL, "config/time_scale", PROPERTY_HINT_EXP_RANGE, "0.01,128,0.01"), _SCS("set_time_scale"), _SCS("get_time_scale"));
@@ -1072,6 +1087,7 @@ void Particles2D::_bind_methods() {
 	ADD_PROPERTYNZ(PropertyInfo(Variant::VECTOR2, "config/offset"), _SCS("set_emissor_offset"), _SCS("get_emissor_offset"));
 	ADD_PROPERTYNZ(PropertyInfo(Variant::VECTOR2, "config/half_extents"), _SCS("set_emission_half_extents"), _SCS("get_emission_half_extents"));
 	ADD_PROPERTYNO(PropertyInfo(Variant::BOOL, "config/local_space"), _SCS("set_use_local_space"), _SCS("is_using_local_space"));
+	ADD_PROPERTYNZ(PropertyInfo(Variant::BOOL, "config/face_direction"), _SCS("set_face_direction"), _SCS("is_face_direction"));
 	ADD_PROPERTYNO(PropertyInfo(Variant::REAL, "config/explosiveness", PROPERTY_HINT_RANGE, "0,1,0.01"), _SCS("set_explosiveness"), _SCS("get_explosiveness"));
 	ADD_PROPERTYNZ(PropertyInfo(Variant::BOOL, "config/flip_h"), _SCS("set_flip_h"), _SCS("is_flipped_h"));
 	ADD_PROPERTYNZ(PropertyInfo(Variant::BOOL, "config/flip_v"), _SCS("set_flip_v"), _SCS("is_flipped_v"));
@@ -1145,6 +1161,7 @@ Particles2D::Particles2D() {
 	time = 0;
 	lifetime = 2;
 	emitting = false;
+	face_direction = false;
 	particles.resize(32);
 	active_count = -1;
 	set_emitting(true);
