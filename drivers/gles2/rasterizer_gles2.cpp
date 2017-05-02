@@ -8951,7 +8951,9 @@ void RasterizerGLES2::canvas_render_items(CanvasItem *p_item_list, int p_z, cons
 			_canvas_item_setup_shader_uniforms(material, shader_cache);
 		}
 
-		bool unshaded = (material && material->shading_mode == VS::CANVAS_ITEM_SHADING_UNSHADED) || ci->blend_mode != VS::MATERIAL_BLEND_MODE_MIX;
+		bool use_mixed_blend = ci->blend_mode == VS::MATERIAL_BLEND_MODE_MIX;
+		bool use_one_alpha = ci->blend_mode == VS::MATERIAL_BLEND_MODE_ADD || ci->blend_mode == VS::MATERIAL_BLEND_MODE_PREMULT_ALPHA;
+		bool unshaded = material && material->shading_mode == VS::CANVAS_ITEM_SHADING_UNSHADED;
 
 		if (unshaded) {
 			canvas_shader.set_uniform(CanvasShaderGLES2::MODULATE, Color(1, 1, 1, 1));
@@ -9008,7 +9010,7 @@ void RasterizerGLES2::canvas_render_items(CanvasItem *p_item_list, int p_z, cons
 		if (unshaded || (p_modulate.a > 0.001 && (!material || material->shading_mode != VS::CANVAS_ITEM_SHADING_ONLY_LIGHT) && !ci->light_masked))
 			_canvas_item_render_commands<false>(ci, current_clip, reclip);
 
-		if (canvas_blend_mode == VS::MATERIAL_BLEND_MODE_MIX && p_light && !unshaded) {
+		if (p_light && !unshaded) {
 
 			CanvasLight *light = p_light;
 			bool light_used = false;
