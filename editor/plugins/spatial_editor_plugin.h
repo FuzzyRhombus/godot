@@ -157,6 +157,7 @@ private:
 		NAVIGATION_GODOT,
 		NAVIGATION_MAYA,
 		NAVIGATION_MODO,
+		NAVIGATION_TRACKPAD,
 	};
 	NavigationScheme _get_navigation_schema(const String &p_property);
 

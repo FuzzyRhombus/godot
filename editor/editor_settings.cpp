@@ -572,7 +572,7 @@ void EditorSettings::_load_defaults(Ref<ConfigFile> p_extra_config) {
 	set("3d_editor/default_z_far", 500.0);
 
 	set("3d_editor/navigation_scheme", 0);
-	hints["3d_editor/navigation_scheme"] = PropertyInfo(Variant::INT, "3d_editor/navigation_scheme", PROPERTY_HINT_ENUM, "Godot,Maya,Modo");
+	hints["3d_editor/navigation_scheme"] = PropertyInfo(Variant::INT, "3d_editor/navigation_scheme", PROPERTY_HINT_ENUM, "Godot,Maya,Modo,Trackpad");
 	set("3d_editor/zoom_style", 0);
 	hints["3d_editor/zoom_style"] = PropertyInfo(Variant::INT, "3d_editor/zoom_style", PROPERTY_HINT_ENUM, "Vertical, Horizontal");
 	set("3d_editor/orbit_modifier", 0);

@@ -574,11 +574,12 @@ static int _get_key_modifier(const String &p_property) {
 
 SpatialEditorViewport::NavigationScheme SpatialEditorViewport::_get_navigation_schema(const String &p_property) {
 	switch (EditorSettings::get_singleton()->get(p_property).operator int()) {
+		default:
 		case 0: return NAVIGATION_GODOT;
 		case 1: return NAVIGATION_MAYA;
 		case 2: return NAVIGATION_MODO;
+		case 3: return NAVIGATION_TRACKPAD;
 	}
-	return NAVIGATION_GODOT;
 }
 
 SpatialEditorViewport::NavigationZoomStyle SpatialEditorViewport::_get_navigation_zoom_style(const String &p_property) {
@@ -1414,6 +1415,9 @@ void SpatialEditorViewport::_sinput(const InputEvent &p_event) {
 
 				if (nav_scheme == NAVIGATION_MAYA && m.mod.alt) {
 					nav_mode = NAVIGATION_ZOOM;
+				} else if (nav_scheme == NAVIGATION_TRACKPAD) {
+					nav_mode = NAVIGATION_ORBIT;
+					if (m.mod.shift) nav_mode = NAVIGATION_PAN;
 				}
 
 			} else if (m.button_mask & 4) {
@@ -1440,6 +1444,8 @@ void SpatialEditorViewport::_sinput(const InputEvent &p_event) {
 				} else if (nav_scheme == NAVIGATION_MAYA) {
 					if (m.mod.alt)
 						nav_mode = NAVIGATION_PAN;
+				} else if (nav_scheme == NAVIGATION_TRACKPAD) {
+					nav_mode = NAVIGATION_PAN;
 				}
 
 			} else if (EditorSettings::get_singleton()->get("3d_editor/emulate_3_button_mouse")) {
