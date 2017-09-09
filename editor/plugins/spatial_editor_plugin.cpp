@@ -1417,7 +1417,15 @@ void SpatialEditorViewport::_sinput(const InputEvent &p_event) {
 					nav_mode = NAVIGATION_ZOOM;
 				} else if (nav_scheme == NAVIGATION_TRACKPAD) {
 					nav_mode = NAVIGATION_ORBIT;
-					if (m.mod.shift) nav_mode = NAVIGATION_PAN;
+					int mod = KEY_META;
+					if (m.mod.shift)
+						mod = KEY_SHIFT;
+					if (m.mod.alt)
+						mod = KEY_ALT;
+					if (m.mod.control)
+						mod = KEY_CONTROL;
+
+					if (mod == _get_key_modifier("3d_editor/pan_modifier")) nav_mode = NAVIGATION_PAN;
 				}
 
 			} else if (m.button_mask & 4) {
